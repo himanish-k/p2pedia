@@ -9,10 +9,16 @@
 		<input type="search">
 		<input type="submit">
 	</form>
+	<p><input id="link-to-editor" type="button" value="New Document" onclick="redirect()"></p>
 	<table id="documentList">
 		<tr>
-			<th>Name</th>
+			<th>ID</th>
+			<th>Title</th>
 			<th>Author</th>
+			<th>Date Created</th>
+			<th>Views</th>
+			<th>Upvotes</th>
+			<th>Downvotes</th>
 		</tr>
 	</table>
 	<table id="peerList">
@@ -22,15 +28,8 @@
 		</tr>
 	</table>
 
-	<script type="text/javascript" src="js/rte-master/cbrte/html2xhtml.min.js"></script>
-	<script type="text/javascript" src="js/rte-master/cbrte/richtext.js"></script>
-	<script src="js/rte-main.js"></script>
-
-	<form name="RTEDemo" onsubmit="return submitForm();">
-		<input type="submit" name="submit" value="Submit" />
-	</form>
-
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="js/mock-data.json"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
