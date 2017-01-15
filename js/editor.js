@@ -12,11 +12,17 @@ if(id)
 	for(x in docs)
 		if(docs[x].id == id) {
 			rte.html = docs[x].content;
+			$('#title').append(docs[x].title);
+			$('#author').append(docs[x].author);
 			mode = MODES.edit;
 		}
 
 rte.build();
-$('#new-doc-form').css('display', 'block');
+
+if(id) { 
+	$('#edit-doc-form').css('display', 'block');
+} else	
+	$('#new-doc-form').css('display', 'block');
 
 function urlParam(name) {
 	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
