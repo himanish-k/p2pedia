@@ -1,28 +1,29 @@
-
-
-initRTE("js/rte-master/cbrte/images/", "js/rte-master/cbrte/", "", true);
-
 var MODES = { new : 1, edit : 2 }; 
 var mode = MODES.new;
-var rte = new richTextEditor('rte');
-var id = urlParam('id');
-var docs = JSON.parse(localStorage['documents']);
 
-if(id)
-	for(x in docs)
-		if(docs[x].id == id) {
-			docs[x].content == null ? rte.html = "" : rte.html = docs[x].content;
-			$('#title').append(docs[x].title);
-			$('#author').append(docs[x].author);
-			mode = MODES.edit;
-		}
+	//initRTE("js/rte-master/cbrte/images/", "js/rte-master/cbrte/", "", true);
 
-rte.build();
+	CKEDITOR.replace('editor');
+	//var rte = new richTextEditor('rte');
+	var id = urlParam('id');
+	var docs = JSON.parse(localStorage['documents']);
 
-if(id) { 
-	$('#edit-doc-form').css('display', 'block');
-} else	
-	$('#new-doc-form').css('display', 'block');
+	if(id)
+		for(x in docs)
+			if(docs[x].id == id) {
+				docs[x].content == null ? $('#editor').val("") : $('#editor').val(docs[x].content);
+				$('#title').append(docs[x].title);
+				$('#author').append(docs[x].author);
+				mode = MODES.edit;
+			}
+
+	//rte.build();
+
+	if(id) { 
+		$('#edit-doc-form').css('display', 'block');
+	} else	
+		$('#new-doc-form').css('display', 'block');
+
 
 function urlParam(name) {
 	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -44,7 +45,7 @@ function submitForm() {
 			newDoc.views = 0;
 			newDoc.upvotes = 0;
 			newDoc.downvotes = 0;
-			newDoc.content = getHtmlSrc('rte');
+			newDoc.content = CKEDITOR.instances.editor.getData();
 
 			newDoc.id = Math.max.apply(Math,documents.map(function(doc){return doc.id;}))+1;
 
@@ -54,7 +55,7 @@ function submitForm() {
 			if(id)
 				for(x in documents)
 					if(docs[x].id == id)
-						documents[x].content = getHtmlSrc('rte');
+						documents[x].content = CKEDITOR.instances.editor.getData();
 		}
 
 
@@ -65,7 +66,7 @@ function submitForm() {
 		localStorage['documents'] = JSON.stringify(documents);
 		window.location.href = "index.html"
 
-		return false;
+		return true;
 }
 
 function getDate() {
