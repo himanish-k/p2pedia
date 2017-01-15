@@ -9,7 +9,13 @@ $(document).ready(function() {
 });
 
 function retreiveDocumentList() {
-	return JSON.parse(localStorage['documents']);
+	var docList = null;
+	 if(localStorage['documents'])
+	 	docList = JSON.parse(localStorage['documents']) 
+	if(docList == null)
+		return false;
+
+	return docList;
 }
 
 function refreshDocumentList() {

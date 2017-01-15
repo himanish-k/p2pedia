@@ -11,7 +11,7 @@ var docs = JSON.parse(localStorage['documents']);
 if(id)
 	for(x in docs)
 		if(docs[x].id == id) {
-			rte.html = docs[x].content;
+			docs[x].content == null ? rte.html = "" : rte.html = docs[x].content;
 			$('#title').append(docs[x].title);
 			$('#author').append(docs[x].author);
 			mode = MODES.edit;
