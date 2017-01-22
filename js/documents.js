@@ -1,13 +1,3 @@
-var peerList = [
-	{ name: "Himanish Kaushal", id: "1" },
-	{ name: "Michael Fakhry",		id: "2" }
-]
-
-$(document).ready(function() {
-	refreshDocumentList();
-	refreshPeerList();
-});
-
 function retreiveDocumentList() {
 	var docList = null;
 	if(localStorage['documents'])
@@ -22,7 +12,7 @@ function refreshDocumentList() {
 	var documentList = retreiveDocumentList();
 	var updatedListHtml = "<tbody>";
 	for(x in documentList) 
-		updatedListHtml += "<tr>" 
+		updatedListHtml += '<tr onclick="viewDocument(' + documentList[x].id + ')">'
 						+ "<td>" + documentList[x].id + "</td>"
 						+ "<td>" + documentList[x].title + "</td>"
 						+ "<td>" + documentList[x].author + "</td>"
@@ -30,8 +20,6 @@ function refreshDocumentList() {
 						+ "<td>" + documentList[x].views + "</td>"
 						+ "<td>" + documentList[x].upvotes + "</td>"
 						+ "<td>" + documentList[x].downvotes + "</td>"
-						+ "<td>" + '<input type="button" value="Edit" onclick="redirectToEditor(' + documentList[x].id + ')">' + "</td>"
-						+ "<td>" + '<input type="button" value="View" onclick="redirectToViewer(' + documentList[x].id + ')">' + "</td>"
 						+ "</tr>" ;
 
 	updatedListHtml += "</tbody>";

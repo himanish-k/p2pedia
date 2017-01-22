@@ -2,8 +2,7 @@
 <html>
 <head>
 	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-	 <link rel="stylesheet" href="styles/normalize.css">
-  <link rel="stylesheet" href="styles/skeleton.css">
+  <link rel="stylesheet" href="styles/bootstrap/css/bootstrap.css">
 </head>
 <body>
 <div class="container">
@@ -13,24 +12,28 @@
 		<input type="submit">
 	</form>
 	<p><input id="link-to-editor" type="button" value="New Document" onclick="redirectToEditor()"></p>
-	<table id="documentList">
-		<tr>
-			<th>ID</th>
-			<th>Title</th>
-			<th>Author</th>
-			<th>Date Created</th>
-			<th>Views</th>
-			<th>Upvotes</th>
-			<th>Downvotes</th>
-		</tr>
-	</table>
+	
+			<table class="table table-striped table-hover" id="documentList">
+				<thead>	
+					<tr>
+						<th>ID</th>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Date Created</th>
+						<th>Views</th>
+						<th>Upvotes</th>
+						<th>Downvotes</th>
+					</tr>
+				</thead>
+			</table>
+	</div>
 	<table id="peerList">
 		<tr>
 			<th>Name</th>
 			<th>ID</th>
 		</tr>
 	</table>
-	</div>
+
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="js/mock-data.json"></script>
