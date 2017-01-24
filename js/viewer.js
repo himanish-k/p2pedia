@@ -1,6 +1,7 @@
 
 function edit(id) {
-	CKEDITOR.replace('ckeditor');
+	if(!CKEDITOR.instances.ckeditor)	
+		CKEDITOR.replace('ckeditor');
 	var documents = JSON.parse(localStorage['documents']);
 	if(id)
 		for(x in documents)

@@ -35,8 +35,8 @@ function settings() {
 }
 
 function show(page) {
-	$(page).css('display', 'block');
 	hideRest(page);
+	$(page).css('display', 'block');
 	return false;
 }
 
