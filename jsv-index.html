@@ -21,7 +21,7 @@
     <link href="styles/dashboard.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
-    <link href="styles/styles.css" rel="stylesheet">
+    <!-- <link href="styles/styles.css" rel="stylesheet"> -->
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]
@@ -35,6 +35,7 @@
   </head>
 
   <body>
+    <div id="sections">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
@@ -51,6 +52,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">Connect</a></li>
             <li><a href="#">Disconnect</a></li>
+            <!-- <li><a data-link="current" href="#">{^{:current}}</a></li> -->
           </ul>
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
@@ -62,10 +64,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li><a href="#" onclick="return dashboard()">Dashboard<span class="sr-only">(current)</span></a></li>
-            <li><a href="#" onclick="return listDocuments()">Documents</a></li>
-            <li class="active"><a href="#" onclick="return editDocument()">New Document</a></li>
+          <ul id="navigation" class="nav nav-sidebar">
+            <li class="active"><a href="#" id="nav-to-dashboard">Dashboard</a></li>
+            <li><a href="#" id="nav-to-document-list">Documents</a></li>
+            <li><a href="#" id="nav-to-document-new">New Document</a></li>
             <li><a href="#">Peers</a></li>
             <li><a href="#">Export</a></li>
           </ul>
@@ -77,9 +79,9 @@
         
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           
-          <div id="dashboard">
+          <div id="dashboard" data-link="visible{:current == 'dashboard'}">
             <h1 class="page-header"></h1>
-            <div class="row placeho lders">
+            <div class="row placeholders">
               <div class="col-xs-6 col-sm-3 placeholder">
               <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">-->
@@ -107,11 +109,18 @@
               </div>
             </div>
           </div>
-          
-          <div id="list-documents">
+
+          <div id="document-view" data-link="visible{:current == 'document-view'}">
+            
+          </div>
+
+          <!-- Unable to understand a bug, but if any section is placed after the 
+               document-list section and its visibility is to be controlled by the
+               current variable, it renders regardless of the property of current -->       
+          <div id="document-list" data-link="visible{:current == 'document-list'}">
             <h2 class="sub-header"></h2>
             <div class="table-responsive">
-              <table class="table table-striped table-hover" id="documentList">
+              <table class="table table-striped table-hover">
                 <thead> 
                   <tr>
                     <th>ID</th>
@@ -122,20 +131,18 @@
                     <th>Upvotes</th>
                     <th>Downvotes</th>
                   </tr>
-                </thead>
+                </thead>             
+
+                <tbody id="document-list-data">
+ 
+                </tbody>
                 
               </table>
             </div>
           </div>
-
-          <div id="view-document">
-            <h2 class="sub-header"></h2>
         
-              <input type="button" id="edit-document-button" value="Edit Document">
-              <div id="document-content">
-
-              </div>
-          </div>
+          
+          
 
           <div id="edit-document">
             <form>
@@ -159,8 +166,8 @@
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Placed at the end of the document so the pages load faster 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> --
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="../../dist/js/bootstrap.min.js"></script>
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
@@ -168,24 +175,63 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 
-    <!-- porting code for index.html, change name to dashboard.js
-    <script src="js/index.js"></script> 
-    There is no dashboard.js! -->
-    <script type="text/javascript" src="js/documents.js"></script>
-
-    <!-- CKEditor and JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-    <script type="text/javascript" src="ckeditor/adapters/jquery.js"></script>
-
-    <!-- Responsible for navigation in response to the side bar -->
-    <script src="js/controller.js"></script>
-
-    <!-- Loads the right document for viewing -->
-    <script type="text/javascript" src="js/viewer.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jquery.observable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jsviews.min.js"></script>
 
+    <!-- porting code for index.html, change name to dashboard.js
+    <script src="js/index.js"></script> 
+    There is no dashboard.js! 
+    <script type="text/javascript" src="js/documents.js"></script> -->
+
+    <!-- CKEditor and JQuery 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="ckeditor/adapters/jquery.js"></script> -->
+
+    <!-- Responsible for navigation in response to the side bar -->
+    <!--<script type="text/javascript" src="js/controller.js"></script>-->
+
+    <!-- Loads the right document for viewing -->
+    <!--<script type="text/javascript" src="js/viewer.js"></script>-->
+
+    <!-- Almost all scripts above this should be removed once all features are 
+          implemented using jsViews and jsObservable -->
+
+    <!-- Displays list of published documents. -->
+    <script id="document-list-table-row-template" type="text/x-jsrender">
+       
+          {^{for documents}}
+            <tr class="nav-to-document-view">
+              <td>{^{:id}}</td>
+              <td>{^{:title}}</td>
+              <td>{^{:author}}</td>
+              <td>{^{:date_created}}</td>
+              <td>{^{:views}}</td>
+              <td>{^{:upvotes}}</td>
+              <td>{^{:downvotes}}</td>
+            </tr>
+          {{/for}}
+        
+    </script>
+    <script type="text/javascript">
+      var documentListTemplate = $.templates("#document-list-table-row-template");
+      var documentList = { };
+      documentList.documents = JSON.parse(localStorage['documents']);
+      documentListTemplate.link("#document-list-data", documentList);
+    </script>
+
+
+    <!-- Displays content of a published document. -->
+    <script id="document-view-template" type="text/x-jsrender">
+      {^{:document^content}}
+    </script> 
+    <script type="text/javascript">
+      
+    </script>
+
+    <script type="text/javascript" src="js/menu-highlighter.js"></script>
+    </div>
   </body>
 </html>

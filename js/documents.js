@@ -27,6 +27,7 @@ function refreshDocumentList() {
 
 	$("#documentList").append(updatedList);
 	updatedList.fadeIn(1000);
+	
 }
 
 function refreshPeerList() {
