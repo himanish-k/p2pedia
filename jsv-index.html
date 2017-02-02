@@ -21,7 +21,7 @@
     <link href="styles/dashboard.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
-    <!-- <link href="styles/styles.css" rel="stylesheet"> -->
+    <link href="styles/styles.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]
@@ -64,14 +64,17 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul id="navigation" class="nav nav-sidebar">
+          <ul class="nav nav-sidebar" data-link="visible{:!enabled}">
+            <li><a href="#" id="close-editor">Close</a></li>
+          </ul>
+          <ul id="navigation" class="nav nav-sidebar menu" data-link="visible{:enabled}">
             <li class="active"><a href="#" id="nav-to-dashboard">Dashboard</a></li>
             <li><a href="#" id="nav-to-document-list">Documents</a></li>
             <li><a href="#" id="nav-to-document-new">New Document</a></li>
             <li><a href="#">Peers</a></li>
             <li><a href="#">Export</a></li>
           </ul>
-          <ul class="nav nav-sidebar">
+          <ul class="nav nav-sidebar menu">
             <li><a href="#">Settings</a></li>
             <li><a href="#">About</a></li>
           </ul>
@@ -114,6 +117,28 @@
             
           </div>
 
+          <div id="document-new" data-link="visible{:current == 'document-new'}">
+            
+          </div>
+
+          <!--
+          <div id="edit-document" data-link="visible{:current == 'document-edit'}">
+            <form>
+              <p id="new-doc-form" style="display:none">
+                Title: <input type="text" name="title">
+                Author: <input type="text" name="author">
+              </p>
+              <p id="edit-doc-form" style="display:none">
+                Title: <span id="title"></span> <br />
+                Author: <span id="author"></span>
+              </p>
+
+              <!-- Change id in js file to 'ckeditor' from 'editor' 
+              <textarea name="editor" id="ckeditor" rows="20" cols="80"></textarea>
+              <p><input type="button" value="Submit" onclick="return submitForm()"></p>
+            </form>
+          </div> -->
+
           <!-- Unable to understand a bug, but if any section is placed after the 
                document-list section and its visibility is to be controlled by the
                current variable, it renders regardless of the property of current -->       
@@ -141,25 +166,6 @@
             </div>
           </div>
         
-          
-          
-
-          <div id="edit-document">
-            <form>
-              <p id="new-doc-form" style="display:none">
-                Title: <input type="text" name="title">
-                Author: <input type="text" name="author">
-              </p>
-              <p id="edit-doc-form" style="display:none">
-                Title: <span id="title"></span> <br />
-                Author: <span id="author"></span>
-              </p>
-
-              <!-- Change id in js file to 'ckeditor' from 'editor' -->
-              <textarea name="editor" id="ckeditor" rows="20" cols="80"></textarea>
-              <p><input type="button" value="Submit" onclick="return submitForm()"></p>
-            </form>
-          </div>
         </div>
       </div>
     </div>
@@ -175,20 +181,21 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jquery.observable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jsviews.min.js"></script>
-
     <!-- porting code for index.html, change name to dashboard.js
     <script src="js/index.js"></script> 
     There is no dashboard.js! 
     <script type="text/javascript" src="js/documents.js"></script> -->
 
-    <!-- CKEditor and JQuery 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jquery.observable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jsviews.min.js"></script>
+
+    <!-- CKEditor and JQuery 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
     <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-    <script type="text/javascript" src="ckeditor/adapters/jquery.js"></script> -->
+    <script type="text/javascript" src="ckeditor/adapters/jquery.js"></script>
+    <!-- <script type="text/javascript" src="js/jsv-editor.js"></script> -->
 
     <!-- Responsible for navigation in response to the side bar -->
     <!--<script type="text/javascript" src="js/controller.js"></script>-->
@@ -225,10 +232,43 @@
 
     <!-- Displays content of a published document. -->
     <script id="document-view-template" type="text/x-jsrender">
+      <h2 class="sub-header">{^{:document^title}}</h2>
+      <h3 class="sub-header">By {^{:document^author}}</h3>
       {^{:document^content}}
     </script> 
+    <script type="text/javascript">    
+      var documentViewTemplate = $.templates("#document-view-template");
+      var documentView = { };
+      documentView.document = JSON.parse(localStorage['documents']);
+      documentViewTemplate.link("#document-view", documentView);
+    </script>
+
+
+
+    <!-- A form to create a new document. -->
+    <script id="document-new-template" type="text/x-jsrender">
+      <form>
+        <div class="form-inline">
+          <div class="form-group">
+            <label>Title:</label>
+            <input class="form-control" type="text" name="title" data-link="title">
+          </div>
+          <div class="form-group">
+            <label>Author:</label>
+            <input class="form-control" type="text" name="author" data-link="author">
+          </div>
+          <input class="btn btn-default" type="button" value="Save to Drafts">
+          <input class="btn btn-default" type="button" value="Publish Document">
+        </div>
+
+        <textarea name="editor" id="ckeditor" rows="20" cols="80"></textarea>
+      </form>
+    </script>
     <script type="text/javascript">
-      
+      var documentNewTemplate = $.templates('#document-new-template');
+      var documentNew = { };
+      documentNew.document = { title : "", author: "", content: "" };
+      documentNewTemplate.link("#document-new", documentNew);
     </script>
 
     <script type="text/javascript" src="js/menu-highlighter.js"></script>
