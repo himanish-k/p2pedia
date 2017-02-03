@@ -113,6 +113,10 @@
             </div>
           </div>
 
+          <div id="document-edit" data-link="visible{:current == 'document-edit'}">
+
+          </div>
+
           <div id="document-view" data-link="visible{:current == 'document-view'}">
             
           </div>
@@ -232,17 +236,21 @@
 
     <!-- Displays content of a published document. -->
     <script id="document-view-template" type="text/x-jsrender">
-      <h2 class="sub-header">{^{:document^title}}</h2>
-      <h3 class="sub-header">By {^{:document^author}}</h3>
+      <div class="sub-header">
+        <input class="btn btn-default" type="button" id="document-edit" value="Edit Document">
+      </div>
+      <div class="sub-header">
+        <h3>{^{:document^title}}</h3>
+        <p>By {^{:document^author}}</p>
+      </div>
       {^{:document^content}}
     </script> 
     <script type="text/javascript">    
       var documentViewTemplate = $.templates("#document-view-template");
       var documentView = { };
-      documentView.document = JSON.parse(localStorage['documents']);
+      documentView.document = { };
       documentViewTemplate.link("#document-view", documentView);
     </script>
-
 
 
     <!-- A form to create a new document. -->
@@ -257,20 +265,39 @@
             <label>Author:</label>
             <input class="form-control" type="text" name="author" data-link="author">
           </div>
-          <input class="btn btn-default" type="button" value="Save to Drafts">
-          <input class="btn btn-default" type="button" value="Publish Document">
+          <input class="btn btn-default" type="button" id="document-new-draft" value="Save to Drafts">
+          <input class="btn btn-default" type="button" id="document-new-publish" value="Publish Document">
         </div>
 
-        <textarea name="editor" id="ckeditor" rows="20" cols="80"></textarea>
+        <textarea name="editor-document-new" id="editor-document-new" data-link="content" rows="20" cols="80"></textarea>
+      </form>
+    </script>
+
+
+    <script id="document-edit-template" type="text/x-jsrender">
+      <form>
+        <div class="form-inline">
+          <div class="form-group">
+            <label>Title:</label>
+            <input class="form-control" type="text" name="title" data-link="document^title">
+          </div>
+          <div class="form-group">
+            <label>Author:</label>
+            <input class="form-control" type="text" name="author" data-link="document^author">
+          </div>
+          <input class="btn btn-default" type="button" id="document-edit-draft" value="Save to Drafts">
+          <input class="btn btn-default" type="button" id="document-edit-publish" value="Publish Document">
+        </div>
+
+        <textarea name="editor-document-edit" id="editor-document-edit" data-link="content" rows="20" cols="80"></textarea>
       </form>
     </script>
     <script type="text/javascript">
-      var documentNewTemplate = $.templates('#document-new-template');
-      var documentNew = { };
-      documentNew.document = { title : "", author: "", content: "" };
-      documentNewTemplate.link("#document-new", documentNew);
+      var documentEditTemplate = $.templates('#document-edit-template');
+      var documentEdit = { };
+      documentEdit.document = { };
+      documentEditTemplate.link("#document-edit", documentEdit);  
     </script>
-
     <script type="text/javascript" src="js/menu-highlighter.js"></script>
     </div>
   </body>
