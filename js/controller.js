@@ -43,6 +43,19 @@ function navigate(e) {
 // Constructs an instance of CK Editor to create new document.
 function constructEditor(editor, content) {
 	CKEDITOR.replace(editor);
+	CKEDITOR.on('instanceReady', function(evt) {
+    var editor = evt.editor;
+
+    editor.on('focus', function(e) {
+       $('input#document-new-publish').prop('disabled', true);
+       $('input#document-edit-publish').prop('disabled', true);
+    });
+    editor.on('blur', function() {
+    	$('input#document-new-publish').prop('disabled', false);
+    	$('input#document-edit-publish').prop('disabled', false);
+
+    });
+	});
 	if(content)
 		CKEDITOR.instances[editor].setData(content);
 }
@@ -213,9 +226,15 @@ $.observe(searchResults.documents, function(ev, evArgs) {
 });
 $('input#settings-erase').click(dataHandler.eraseData);
 $('input#settings-inject-mock').click(dataHandler.injectMockData);
+$('input#editor-document-edit').focus(
+	function() {
+		$('textarea#document-edit-publish').prop('disabled', true);
+	}
+);
 
 $(document).ready(function() {
 	for(x in SECTION)		
-		$('#' + SECTION[''+ x]).css('visibility', 'visible');	
+		$('#' + SECTION[''+ x]).css('visibility', 'visible');
+
 });
 
