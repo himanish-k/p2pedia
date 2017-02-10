@@ -64,18 +64,19 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar" data-link="visible{:!enabled}">
+          <ul class="nav nav-sidebar" style="display: none;" data-link="visible{:!enabled}">
             <li><a href="#" id="close-editor">Close</a></li>
           </ul>
           <ul id="navigation" class="nav nav-sidebar menu" data-link="visible{:enabled}">
             <li class="active"><a href="#" id="nav-to-dashboard">Dashboard</a></li>
             <li><a href="#" id="nav-to-document-list">Documents</a></li>
             <li><a href="#" id="nav-to-document-new">New Document</a></li>
+            <li><a href="#" id="nav-to-search">Search</a></li>
             <li><a href="#">Peers</a></li>
             <li><a href="#">Export</a></li>
           </ul>
           <ul class="nav nav-sidebar menu">
-            <li><a href="#">Settings</a></li>
+            <li><a href="#" id="nav-to-settings">Settings</a></li>
             <li><a href="#">About</a></li>
           </ul>
         </div>
@@ -113,18 +114,32 @@
             </div>
           </div>
 
-          <div id="document-edit" data-link="visible{:current == 'document-edit'}">
+          <div id="document-edit" style="visibility: hidden" data-link="visible{:current == 'document-edit'}">
 
           </div>
 
-          <div id="document-view" data-link="visible{:current == 'document-view'}">
+          <div id="document-view" style="visibility: hidden" data-link="visible{:current == 'document-view'}">
             
           </div>
 
-          <div id="document-new" data-link="visible{:current == 'document-new'}">
+          <div id="document-new" style="visibility: hidden" data-link="visible{:current == 'document-new'}">
             
           </div>
 
+          <div id="search" style="visibility: hidden" data-link="visible{:current == 'search'}">
+            
+          </div>
+
+          <div id="search-result" style="visibility: hidden" data-link="visible{:current == 'search-result'}">
+
+          </div>
+
+          <div id="settings" style="visibility: hidden" data-link="visible{:current == 'settings'}">
+            <input class="btn btn-danger" type="button" id="settings-erase" value="Erase Documents">
+            <input class="btn btn-default" type="button" id="settings-backup" value="Backup Documents">
+            <input class="btn btn-default" type="button" id="settings-reset" value="Reset From Backup">
+            <input class="btn btn-default" type="button" id="settings-inject-mock" value="Inject Mock Data">
+          </div>
           <!--
           <div id="edit-document" data-link="visible{:current == 'document-edit'}">
             <form>
@@ -147,27 +162,7 @@
                document-list section and its visibility is to be controlled by the
                current variable, it renders regardless of the property of current -->       
           <div id="document-list" data-link="visible{:current == 'document-list'}">
-            <h2 class="sub-header"></h2>
-            <div class="table-responsive">
-              <table class="table table-striped table-hover">
-                <thead> 
-                  <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Date Created</th>
-                    <th>Views</th>
-                    <th>Upvotes</th>
-                    <th>Downvotes</th>
-                  </tr>
-                </thead>             
-
-                <tbody id="document-list-data">
- 
-                </tbody>
-                
-              </table>
-            </div>
+            
           </div>
         
         </div>
@@ -180,9 +175,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> --
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="../../dist/js/bootstrap.min.js"></script>
-    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <!-- Just to make our placeholder images work. Don't actually copy the next line!
     <script src="../../assets/js/vendor/holder.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 
     <!-- porting code for index.html, change name to dashboard.js
@@ -194,6 +189,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jquery.observable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.83/jsviews.min.js"></script>
+    <script src="js/lorem.js" type="text/javascript"></script>
 
     <!-- CKEditor and JQuery 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
@@ -208,7 +204,39 @@
     <!--<script type="text/javascript" src="js/viewer.js"></script>-->
 
     <!-- Almost all scripts above this should be removed once all features are 
-          implemented using jsViews and jsObservable -->
+          implemented using jsViews and jsObservable -->        
+    <script id="search-result-template" type="text/x-jsrender">
+      <input class="btn btn-default" type="button" id="search-result-back-btn" value="Back">
+
+      {{include tmpl="#document-list-table-template" /}}
+
+    </script>
+
+    <script id="document-list-table-template" type="text/x-jsrender">
+
+      <h2 class="sub-header"></h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead> 
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Date Created</th>
+              <th>Views</th>
+              <th>Upvotes</th>
+              <th>Downvotes</th>
+            </tr>
+          </thead>             
+
+          <tbody id="document-list-data">
+            {{include tmpl="#document-list-table-row-template"/}}
+
+          </tbody>
+          
+        </table>
+      </div>
+    </script>
 
     <!-- Displays list of published documents. -->
     <script id="document-list-table-row-template" type="text/x-jsrender">
@@ -227,16 +255,46 @@
         
     </script>
     <script type="text/javascript">
-      var documentListTemplate = $.templates("#document-list-table-row-template");
-      var documentList = { };
-      documentList.documents = JSON.parse(localStorage['documents']);
-      documentListTemplate.link("#document-list-data", documentList);
+      var documentListTemplate = $.templates("#document-list-table-template");
+      var documentList = { 
+        documents : [],
+        insert : function(doc, index) {
+          if(index)
+            $.observable(this.documents).insert(index, doc);
+          else
+            $.observable(this.documents).insert(doc);            
+        },
+        remove : function(index) {
+          $.observable(this.documents).remove(index);
+        }
+      };
+      if(localStorage['documents'])
+        documentList.documents = JSON.parse(localStorage['documents']);
+      documentListTemplate.link("#document-list", documentList);
+    </script>
+
+    <script type="text/javascript">
+      var searchResultTemplate = $.templates("#search-result-template");
+      var searchResults = { 
+        documents : [],
+        insert : function(doc, index) {
+          if(index)
+            $.observable(this.documents).insert(index, doc);
+          else
+            $.observable(this.documents).insert(doc);            
+        },
+        remove : function(index) {
+          $.observable(this.documents).remove(index);
+        }
+      };
+      searchResultTemplate.link("#search-result", searchResults);
     </script>
 
 
     <!-- Displays content of a published document. -->
     <script id="document-view-template" type="text/x-jsrender">
       <div class="sub-header">
+        <input class="btn btn-default" type="button" id="document-view-back-btn" value="Back">
         <input class="btn btn-default" type="button" id="document-edit" value="Edit Document">
       </div>
       <div class="sub-header">
@@ -255,7 +313,7 @@
 
     <!-- A form to create a new document. -->
     <script id="document-new-template" type="text/x-jsrender">
-      <form>
+      <form class="well">
         <div class="form-inline">
           <div class="form-group">
             <label>Title:</label>
@@ -275,7 +333,7 @@
 
 
     <script id="document-edit-template" type="text/x-jsrender">
-      <form>
+      <form class="well">
         <div class="form-inline">
           <div class="form-group">
             <label>Title:</label>
@@ -298,7 +356,34 @@
       documentEdit.document = { };
       documentEditTemplate.link("#document-edit", documentEdit);  
     </script>
-    <script type="text/javascript" src="js/menu-highlighter.js"></script>
+
+
+    <script id="search-template" type="text/x-jsrender">
+      <form class="well">
+        <div class="form-inline">
+          <div class="form-group">
+            <label>Title:</label>
+            <input class="form-control" type="text" name="title" data-link="title">
+          </div>
+          <div class="form-group">
+            <label>Author:</label>
+            <input class="form-control" type="text" name="author" data-link="author">
+          </div>
+          <input class="btn btn-default" type="button" id="btn-search" value="Search">
+        </div>
+      </form>
+    </script>
+    <script type="text/javascript">
+      var searchTemplate = $.templates('#search-template');
+      var searchItems = { 
+        title : "",
+        author : ""
+      };
+      searchTemplate.link("#search", searchItems);  
+    </script>
+    <script type="text/javascript" src="js/queryHandler.js"></script>
+    <script type="text/javascript" src="js/dataHandler.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
     </div>
   </body>
 </html>
